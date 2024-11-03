@@ -1,4 +1,5 @@
-// config.js
+require('dotenv').config();
+
 module.exports = {
-    OPENAI_API_KEY: 'your-openai-api-key-here' // replace with your actual API key
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY // securely load the API key
 };
