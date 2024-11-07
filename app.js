@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
@@ -8,18 +9,10 @@ const path = require('path');
 const ExcelJS = require('exceljs');
 const winston = require('winston');
 
-// Load the OpenAI API key from the config file
-const CONFIG_FILE_PATH = path.join(__dirname, 'config.js');
-let OPENAI_API_KEY;
-
-try {
-    OPENAI_API_KEY = require(CONFIG_FILE_PATH).OPENAI_API_KEY;
-    if (!OPENAI_API_KEY || OPENAI_API_KEY === 'OpenAPI-Keyaddedhere') {
-        throw new Error("OpenAI API key is missing or not configured in config.js.");
-    }
-} catch (error) {
-    console.error("Error loading OpenAI API key:", error.message);
-    process.exit(1); // Exit if API key is missing or invalid
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+if (!OPENAI_API_KEY) {
+    console.error("Error: OpenAI API key is missing. Please configure it in the .env file.");
+    process.exit(1); // Exit if API key is missing
 }
 
 // Create logs directory if it doesn't exist
@@ -50,8 +43,23 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Set up file upload using multer
-const upload = multer({ dest: 'uploads/' });
+// Configure multer to accept only specific file types
+const upload = multer({
+    dest: 'uploads/',
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = [
+            'text/csv',
+            'text/plain',
+            'application/json',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);  // Accept the file
+        } else {
+            cb(new Error('Unsupported file type. Please upload a CSV, TXT, JSON, or XLSX file.'));
+        }
+    }
+});
 
 // Serve the HTML file at the root URL
 app.get('/', (req, res) => {
@@ -106,14 +114,6 @@ app.post('/api/chat', upload.single('file'), async (req, res) => {
 
                 fileContent = JSON.stringify(rows);
             }
-            // Unsupported file types
-            else {
-                fs.unlink(filePath, (err) => {
-                    if (err) console.error("Error deleting file:", err);
-                });
-                logger.warn('Unsupported file type uploaded');
-                return res.status(400).send('Unsupported file type. Please upload a CSV, TXT, JSON, or XLSX file.');
-            }
 
             // Delete the uploaded file after processing
             fs.unlink(filePath, (err) => {
@@ -135,6 +135,8 @@ app.post('/api/chat', upload.single('file'), async (req, res) => {
 // Function to send query to OpenAI and respond to client
 async function processQueryAndRespond(query, fileContent, res) {
     try {
+        const startTime = Date.now();  // Start timing the response
+
         const messages = [
             { role: 'user', content: query || 'Please summarize the file content.' }
         ];
@@ -152,10 +154,21 @@ async function processQueryAndRespond(query, fileContent, res) {
             }
         });
 
+        const endTime = Date.now();  // End timing the response
+        const responseTime = endTime - startTime;  // Calculate response time in milliseconds
+        const tokensUsed = response.data.usage.total_tokens;  // Total tokens used in the response
         const aiResponse = response.data.choices[0]?.message?.content || 'No response from AI';
-        logger.info(`AI Response: ${aiResponse}`);
 
-        res.json({ response: aiResponse });
+        logger.info(`AI Response: ${aiResponse}`);
+        logger.info(`Response Time: ${responseTime} ms, Tokens Used: ${tokensUsed}`);
+
+        // Append response time and tokens used information to the AI response
+        const responseWithInfo = `${aiResponse}\n\n---\nResponse time: ${responseTime} ms | Tokens used: ${tokensUsed}`;
+
+        // Send response along with additional information appended
+        res.json({
+            response: responseWithInfo
+        });
     } catch (error) {
         if (error.response) {
             logger.error("OpenAI API Error:", error.response.data);
