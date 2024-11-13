@@ -1,0 +1,22 @@
+2024-11-12 17:49:15 [INFO]: Server is running on http://localhost:4000
+2024-11-12 17:49:24 [INFO]: Received Query: tell me a joke
+2024-11-12 17:49:25 [INFO]: AI Response: Why don’t scientists trust atoms?
+
+Because they make up everything!
+2024-11-12 17:49:25 [INFO]: Response Time: 1311 ms, Tokens Used: 24
+2024-11-12 17:54:15 [INFO]: Received Query: Please can you provide the summary of attached file
+2024-11-12 17:54:15 [INFO]: Received File: U11859836_20240101_20241025.csv, Type: text/csv
+2024-11-12 17:54:16 [ERROR]: OpenAI API Error:
+2024-11-12 19:54:30 [INFO]: Server is running on http://localhost:4000
+2024-11-12 19:54:49 [INFO]: Received Query: what is your model name
+2024-11-12 19:54:49 [INFO]: Received Query: what is your model name
+2024-11-12 19:54:50 [INFO]: AI Response: I am an AI digital assistant and my model name is ChatGPT.
+2024-11-12 19:54:50 [INFO]: Response Time: 1699 ms, Tokens Used: 27
+2024-11-12 19:54:50 [INFO]: AI Response: I am an AI digital assistant and do not have a specific model name. I am just referred to as a chatbot or virtual assistant.
+2024-11-12 19:54:50 [INFO]: Response Time: 1170 ms, Tokens Used: 40
+2024-11-12 19:55:13 [INFO]: Received Query: what open AI model are you using
+2024-11-12 19:55:14 [INFO]: AI Response: I am using OpenAI's GPT-3, a powerful language model that allows me to generate human-like text based on the input I receive.
+2024-11-12 19:55:14 [INFO]: Response Time: 900 ms, Tokens Used: 44
+2024-11-12 19:55:32 [INFO]: Received Query: can you use GPT-4 model
+2024-11-12 19:55:36 [INFO]: AI Response: Sorry, but I am currently using the GPT-3 model. The GPT-4 model has not been released yet.
+2024-11-12 19:55:36 [INFO]: Response Time: 3743 ms, Tokens Used: 41

@@ -27,12 +27,11 @@
 <body>
     <div class="container">
         <h1>Simple AI Search Page</h1>
-        <div style="display: flex; align-items: center; justify-content: center;">
-            <input type="text" id="searchBox" placeholder="Type your question here" style="width: 70%; padding: 10px;">
-            <button onclick="startRecognition()">🎤</button> <!-- Microphone button -->
-        </div>
+        <input type="text" id="searchBox" placeholder="Type your question here" style="width: 80%; padding: 10px;">
         <input type="file" id="fileInput" style="margin-top: 10px;">
         <button onclick="getAIResponse()">Search</button>
+        <input type="text" id="searchBox" placeholder="Type your question here" style="width: 80%; padding: 10px;">
+<button onclick="startRecognition()">🎤</button> <!-- Microphone button -->
 
         <div id="output">Response will appear here...</div>
     </div>
@@ -70,7 +69,6 @@
             }
         }
     </script>
-
     <script>
         let recognition;
     
@@ -101,5 +99,6 @@
             alert("Speech recognition not supported in this browser.");
         }
     </script>
+    
 </body>
 </html>
