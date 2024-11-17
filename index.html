@@ -53,7 +53,8 @@
             }
 
             try {
-                const response = await fetch('http://localhost:4000/api/chat', {
+                // Use relative URL for the deployed environment
+                const response = await fetch('/api/chat', {
                     method: 'POST',
                     body: formData
                 });
@@ -73,26 +74,26 @@
 
     <script>
         let recognition;
-    
+
         // Initialize the Web Speech API
         if ('webkitSpeechRecognition' in window) {
             recognition = new webkitSpeechRecognition();
             recognition.lang = 'en-US';  // Set to English (supports various accents)
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
-    
+
             // Start recognition on button click
             function startRecognition() {
                 recognition.start();
             }
-    
+
             // Process the recognized speech
             recognition.onresult = function(event) {
                 const query = event.results[0][0].transcript;
                 document.getElementById('searchBox').value = query;
                 getAIResponse();  // Send recognized text as query
             };
-    
+
             // Restart recognition on error
             recognition.onerror = function(event) {
                 console.error("Speech recognition error:", event.error);
